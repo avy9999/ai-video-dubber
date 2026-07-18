@@ -28,7 +28,7 @@ RUN chmod +x /app/piper/runtime/piper
 ENV LD_LIBRARY_PATH=/app/piper/runtime:$LD_LIBRARY_PATH
 
 # ---------- Pre-download Whisper ----------
-RUN python -c "import whisper; whisper.load_model('small')"
+RUN python scripts/preload_models.py
 
 EXPOSE 8000
 
