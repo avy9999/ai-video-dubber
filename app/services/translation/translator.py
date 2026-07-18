@@ -1,14 +1,15 @@
 import torch
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
-DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 MODEL_NAME = "facebook/nllb-200-distilled-600M"
 
-print("Loading NLLB translation model...")
+print(f"Loading NLLB translation model on {DEVICE}...")
 
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 model = AutoModelForSeq2SeqLM.from_pretrained(MODEL_NAME).to(DEVICE)
+model.eval()
 
 print("NLLB model loaded.")
 
@@ -30,7 +31,7 @@ def translate_text(text: str, target_language: str) -> str:
         truncation=True,
     ).to(DEVICE)
 
-    with torch.no_grad():
+    with torch.inference_mode():
         translated_tokens = model.generate(
             **inputs,
             forced_bos_token_id=tokenizer.convert_tokens_to_ids(

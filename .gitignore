@@ -9,6 +9,7 @@ temp/*
 *.db
 .env
 .env.example
+.env.local
 
 .idea/
 .vscode/
