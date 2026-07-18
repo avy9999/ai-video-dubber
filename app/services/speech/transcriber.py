@@ -13,6 +13,7 @@ def transcribe(audio_path: str):
         audio_path,
         language="en",
         fp16=torch.cuda.is_available(),
+        word_timestamps=True
     )
 
     return result

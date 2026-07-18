@@ -16,3 +16,4 @@ class Job:
     status: JobStatus
     progress: int
     transcript: list = field(default_factory=list)
+    output_video: str | None = None
