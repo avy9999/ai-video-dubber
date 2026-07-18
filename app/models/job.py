@@ -1,5 +1,5 @@
+from dataclasses import dataclass, field
 from enum import Enum
-from dataclasses import dataclass
 
 
 class JobStatus(str, Enum):
@@ -15,3 +15,4 @@ class Job:
     filename: str
     status: JobStatus
     progress: int
+    transcript: list = field(default_factory=list)

@@ -8,6 +8,7 @@ from app.utils.file_utils import get_upload_path
 from app.services.speech.transcriber import transcribe
 from app.services.speech.diarization import diarize
 from app.services.speech.merger import merge_speakers
+from app.services.translation.translator import translate_segments
 
 
 def process_video(job_id: str):
@@ -28,30 +29,39 @@ def process_video(job_id: str):
 
         job.progress = 20
 
+        # Step 2: Speaker diarization
         speakers = diarize(str(audio_path))
-        whisper_result = transcribe(str(audio_path))
+        job.progress = 35
 
+        # Step 3: Speech transcription
+        whisper_result = transcribe(str(audio_path))
+        job.progress = 50
+
+        # Step 4: Merge speakers with transcript
         merged = merge_speakers(
             speakers,
             whisper_result["segments"],
         )
+        job.progress = 60
+
+        # Step 5: Translate transcript
+        translated = translate_segments(
+            merged,
+            "spanish",
+        )
+        job.transcript = translated
+        job.progress = 80
 
         print("=" * 60)
-        print("SPEAKER TRANSCRIPT")
+        print("TRANSLATED TRANSCRIPT")
         print("=" * 60)
 
-        for line in merged:
+        for line in translated:
             print(line)
 
         print("=" * 60)
 
-        job.progress = 60
-
-        # Simulate remaining stages for now
-        for progress in [80, 100]:
-            time.sleep(2)
-            job.progress = progress
-
+        job.progress = 100
         job.status = JobStatus.COMPLETED
 
     except Exception as e:
