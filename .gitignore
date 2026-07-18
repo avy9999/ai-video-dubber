@@ -8,6 +8,7 @@ temp/*
 
 *.db
 .env
+.env.example
 
 .idea/
 .vscode/
