@@ -28,9 +28,6 @@ RUN chmod +x /app/piper/runtime/piper
 
 ENV LD_LIBRARY_PATH=/app/piper/runtime:$LD_LIBRARY_PATH
 
-# Pre-download AI models
-RUN python scripts/preload_models.py
-
 EXPOSE 8000
 
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
