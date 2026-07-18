@@ -13,3 +13,7 @@ temp/*
 .vscode/
 
 *.log
+
+# Piper voices
+piper/voices/*.onnx
+piper/voices/*.onnx.json
