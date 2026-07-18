@@ -1,5 +1,8 @@
 FROM python:3.11-slim-bookworm
 
+ARG HUGGINGFACE_TOKEN
+ENV HUGGINGFACE_TOKEN=$HUGGINGFACE_TOKEN
+
 WORKDIR /app
 
 # System dependencies
@@ -17,17 +20,15 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy project
 COPY . .
 
-# Extract Piper inside Linux (preserves symlinks)
+# Extract Piper
 RUN mkdir -p /app/piper/runtime && \
     tar -xzf /app/piper/piper_linux_x86_64.tar.gz -C /app/piper/runtime
 
-# Make Piper executable
 RUN chmod +x /app/piper/runtime/piper
 
-# Allow Piper to find its shared libraries
 ENV LD_LIBRARY_PATH=/app/piper/runtime:$LD_LIBRARY_PATH
 
-# ---------- Pre-download Whisper ----------
+# Pre-download AI models
 RUN python scripts/preload_models.py
 
 EXPOSE 8000
