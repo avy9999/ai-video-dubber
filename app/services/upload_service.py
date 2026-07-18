@@ -8,7 +8,11 @@ from app.utils.file_utils import generate_job_id, get_upload_path
 jobs: dict[str, Job] = {}
 
 
-def save_video(file: UploadFile) -> Job:
+def save_video(
+    file: UploadFile,
+    source_language: str,
+    target_language: str,
+) -> Job:
     job_id = generate_job_id()
 
     save_path = get_upload_path(job_id, file.filename)
@@ -21,6 +25,8 @@ def save_video(file: UploadFile) -> Job:
         filename=file.filename,
         status=JobStatus.PENDING,
         progress=0,
+        source_language=source_language,
+        target_language=target_language,
     )
 
     jobs[job_id] = job

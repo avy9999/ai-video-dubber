@@ -5,7 +5,7 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 print(f"Loading Whisper model on {DEVICE}...")
 
-model = whisper.load_model("base", device=DEVICE)
+model = whisper.load_model("small", device=DEVICE)
 
 
 def transcribe(audio_path: str, language: str):

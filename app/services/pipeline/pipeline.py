@@ -77,6 +77,10 @@ def process_video(job_id: str):
             job.target_language,
         )
 
+        # for segment in translated[:10]:
+        #     print(segment["text"])
+        #     print("=>", segment["translated_text"])
+
         job.transcript = translated
         job.progress = 80
 
