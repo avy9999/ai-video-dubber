@@ -7,6 +7,7 @@ from app.services.upload_service import jobs
 from app.utils.file_utils import get_upload_path
 from app.services.speech.transcriber import transcribe
 from app.services.speech.diarization import diarize
+from app.services.speech.merger import merge_speakers
 
 
 def process_video(job_id: str):
@@ -28,24 +29,20 @@ def process_video(job_id: str):
         job.progress = 20
 
         speakers = diarize(str(audio_path))
+        whisper_result = transcribe(str(audio_path))
+
+        merged = merge_speakers(
+            speakers,
+            whisper_result["segments"],
+        )
 
         print("=" * 60)
-        print("SPEAKERS")
+        print("SPEAKER TRANSCRIPT")
         print("=" * 60)
 
-        for speaker in speakers:
-            print(speaker)
+        for line in merged:
+            print(line)
 
-        print("=" * 60)
-
-        job.progress = 40
-
-        text = transcribe(str(audio_path))
-
-        print("=" * 60)
-        print("TRANSCRIPTION")
-        print("=" * 60)
-        print(text)
         print("=" * 60)
 
         job.progress = 60

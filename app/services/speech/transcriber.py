@@ -12,7 +12,7 @@ def transcribe(audio_path: str):
     result = model.transcribe(
         audio_path,
         language="en",
-        fp16=torch.cuda.is_available()
+        fp16=torch.cuda.is_available(),
     )
 
-    return result["text"]
+    return result
