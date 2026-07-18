@@ -1,21 +1,34 @@
 from pathlib import Path
 import subprocess
 
+from app.config.voices import PIPER_VOICES
+
+
+def get_voice_model(language):
+    if language not in PIPER_VOICES:
+        raise ValueError(
+            f"No Piper voice available for {language}"
+        )
+
+    return PIPER_VOICES[language]["model"]
+
+
 PIPER_EXE = Path("piper") / "piper.exe"
-VOICE_MODEL = (
-    Path("piper")
-    / "voices"
-    / "hi_IN-pratham-medium.onnx"
-)
 
 
-def synthesize(text: str, output_file: str):
+def synthesize(
+    text,
+    output_file,
+    language
+):
+    model = get_voice_model(language)
+
     command = [
         str(PIPER_EXE),
         "--model",
-        str(VOICE_MODEL),
+        model,
         "--output_file",
-        output_file,
+        str(output_file),
     ]
 
     subprocess.run(
@@ -25,7 +38,11 @@ def synthesize(text: str, output_file: str):
     )
 
 
-def synthesize_segments(segments: list, output_dir: str):
+def synthesize_segments(
+    segments: list,
+    output_dir: str,
+    language: str
+):
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -37,6 +54,7 @@ def synthesize_segments(segments: list, output_dir: str):
         synthesize(
             segment["translated_text"],
             str(output_file),
+            language,
         )
 
         audio_files.append(str(output_file))

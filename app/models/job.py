@@ -15,5 +15,9 @@ class Job:
     filename: str
     status: JobStatus
     progress: int
+
+    source_language: str = "en"
+    target_language: str = "spanish"
+
     transcript: list = field(default_factory=list)
     output_video: str | None = None

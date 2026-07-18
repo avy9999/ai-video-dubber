@@ -15,6 +15,7 @@ from app.services.audio.audio_extractor import (
     get_video_duration,
     replace_audio,
 )
+from app.services.cleanup_service import cleanup_job
 
 def process_video(job_id: str):
     job = jobs[job_id]
@@ -26,6 +27,14 @@ def process_video(job_id: str):
         job.progress = 10
 
         video_path = get_upload_path(job.id, job.filename)
+
+        duration = get_video_duration(video_path)
+
+        if duration > 600:
+            raise ValueError(
+                "Video length must be under 10 minutes"
+            )
+
         audio_path = Path("temp") / f"{job.id}.wav"
 
         Path("temp").mkdir(exist_ok=True)
@@ -39,7 +48,10 @@ def process_video(job_id: str):
         job.progress = 35
 
         # Step 3: Speech transcription
-        whisper_result = transcribe(str(audio_path))
+        whisper_result = transcribe(
+            str(audio_path),
+            job.source_language,
+        )
 
         # print("\nFirst 5 Whisper segments:")
         # for segment in whisper_result["segments"][:5]:
@@ -62,7 +74,7 @@ def process_video(job_id: str):
         # Step 5: Translate transcript
         translated = translate_segments(
             segments,
-            "hindi",
+            job.target_language,
         )
 
         job.transcript = translated
@@ -77,6 +89,7 @@ def process_video(job_id: str):
         audio_segments = synthesize_segments(
             translated,
             Path("temp") / job.id,
+            job.target_language,
         )
 
         duration = get_video_duration(video_path)
@@ -92,7 +105,10 @@ def process_video(job_id: str):
 
         job.progress = 95
 
-        output_video = Path("temp") / f"{job.id}_dubbed.mp4"
+        output_dir = Path("output")
+        output_dir.mkdir(exist_ok=True)
+
+        output_video = output_dir / f"{job.id}_dubbed.mp4"
 
         replace_audio(
             video_path,
@@ -102,10 +118,14 @@ def process_video(job_id: str):
 
         job.output_video = str(output_video)
 
+        # Remove uploaded original video
+        if video_path.exists():
+            video_path.unlink()
+
+        cleanup_job(job.id)
+
         job.progress = 100
         job.status = JobStatus.COMPLETED
-
-
 
     except Exception as e:
         job.status = JobStatus.FAILED
