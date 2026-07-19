@@ -1,8 +1,5 @@
 FROM python:3.11-slim-bookworm
 
-ARG HUGGINGFACE_TOKEN
-ENV HUGGINGFACE_TOKEN=$HUGGINGFACE_TOKEN
-
 WORKDIR /app
 
 # System dependencies
@@ -15,6 +12,12 @@ RUN apt-get update && apt-get install -y \
 
 # Python dependencies
 COPY requirements.txt .
+
+# Install CUDA-enabled PyTorch
+RUN pip install --no-cache-dir \
+    torch torchvision torchaudio \
+    --index-url https://download.pytorch.org/whl/cu128
+
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy project
@@ -26,7 +29,7 @@ RUN mkdir -p /app/piper/runtime && \
 
 RUN chmod +x /app/piper/runtime/piper
 
-ENV LD_LIBRARY_PATH=/app/piper/runtime:$LD_LIBRARY_PATH
+ENV LD_LIBRARY_PATH=/app/piper/runtime:${LD_LIBRARY_PATH}
 
 EXPOSE 8000
 
