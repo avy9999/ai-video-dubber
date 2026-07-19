@@ -14,14 +14,6 @@ The application follows a client-server architecture where the frontend is respo
 
 The system has been designed with modularity in mind so that each AI component can be replaced independently without affecting the overall pipeline.
 
----
-
-# High Level Architecture
-
-![Architecture](architecture.png)
-
----
-
 # Components
 
 ## Frontend
