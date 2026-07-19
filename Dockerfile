@@ -27,7 +27,7 @@ COPY . .
 RUN mkdir -p /app/piper/runtime && \
     tar -xzf /app/piper/piper_linux_x86_64.tar.gz -C /app/piper/runtime
 
-RUN chmod +x /app/piper/runtime/piper
+RUN chmod +x /app/piper/runtime/piper/piper
 
 ENV LD_LIBRARY_PATH=/app/piper/runtime:${LD_LIBRARY_PATH}
 

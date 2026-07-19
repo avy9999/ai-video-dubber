@@ -12,7 +12,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
-        "https://ai-video-dubber-avy.vercel.app/",
+        "https://ai-video-dubber-avy.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],

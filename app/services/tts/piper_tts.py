@@ -13,7 +13,7 @@ def get_voice_model(language):
     return PIPER_VOICES[language]["model"]
 
 
-PIPER_EXE = Path("piper") / "runtime" / "piper"
+PIPER_EXE = Path("/app/piper/runtime/piper/piper")
 
 
 def synthesize(
