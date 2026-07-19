@@ -9,6 +9,7 @@ import api, { getJobStatus, getDownloadUrl } from "./services/api";
 export default function App() {
 
     const [file, setFile] = useState<File | null>(null);
+    console.log("VITE_API_URL =", import.meta.env.VITE_API_URL);
     const [sourceLanguage, setSourceLanguage] = useState("english");
     const [targetLanguage, setTargetLanguage] = useState("hindi");
 
