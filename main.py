@@ -1,13 +1,22 @@
-from fastapi import FastAPI
+import warnings
 
-app = FastAPI(
-    title="AI Video Dubber",
-    version="1.0.0"
+warnings.filterwarnings("ignore")
+
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from app.api.routes import router
+
+app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "https://ai-video-dubber-avy.vercel.app",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-
-@app.get("/")
-def root():
-    return {
-        "message": "AI Video Dubber API is running"
-    }
+app.include_router(router)
